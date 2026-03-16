@@ -22,6 +22,7 @@
 <body>
     <div class="container" style="max-width: 700px;">
         <h2 class="mb-4">Service Monitor</h2>
+        
         <div id="results">
             <div class="url-card">
                 <strong>https://www.google.com</strong>
@@ -31,32 +32,25 @@
                 <strong>https://api.github.com</strong>
                 <button class="btn btn-primary btn-sm" onclick="checkUrl('https://api.github.com', this)">Check Status</button>
             </div>
+            <div class="url-card">
+                <strong>https://support.stripe.com</strong>
+                <button class="btn btn-primary btn-sm" onclick="checkUrl('https://support.stripe.com', this)">Check Status</button>
+            </div>
         </div>
     </div>
 
     <script>
-        console.log("Script loaded and ready.");
-
         async function checkUrl(url, btn) {
-            console.log("Checking URL: " + url);
-            
-            // UI Feedback
+            console.log("Ping triggered for: " + url);
             btn.disabled = true;
             btn.innerText = "Checking...";
             
             try {
-                // We use 'no-cors' to prevent the browser from blocking the request
-                const response = await fetch(url, { 
-                    mode: 'no-cors', 
-                    cache: 'no-cache',
-                    method: 'GET'
-                });
-                
-                console.log("Response received for " + url);
+                // Using no-cors to bypass security restrictions
+                await fetch(url, { mode: 'no-cors', cache: 'no-cache' });
                 btn.className = 'btn btn-success btn-sm';
                 btn.innerText = "ONLINE";
             } catch (err) {
-                console.error("Error checking " + url, err);
                 btn.className = 'btn btn-danger btn-sm';
                 btn.innerText = "OFFLINE";
             } finally {
