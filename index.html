@@ -17,6 +17,8 @@
             border-radius: 10px; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.08); 
         }
+        .action-area { text-align: right; min-width: 120px; }
+        .latency-text { font-size: 0.75rem; color: #6c757d; margin-top: 4px; display: block; height: 1rem; }
     </style>
 </head>
 <body>
@@ -26,49 +28,71 @@
         <div id="results">
             <div class="url-card">
                 <strong>https://www.google.com</strong>
-                <button class="btn btn-primary btn-sm" onclick="checkUrl('https://www.google.com', this)">Check Status</button>
+                <div class="action-area">
+                    <button class="btn btn-primary btn-sm" onclick="checkUrl('https://www.google.com', this)">Check Status</button>
+                    <span class="latency-text"></span>
+                </div>
             </div>
             <div class="url-card">
                 <strong>https://api.github.com</strong>
-                <button class="btn btn-primary btn-sm" onclick="checkUrl('https://api.github.com', this)">Check Status</button>
+                <div class="action-area">
+                    <button class="btn btn-primary btn-sm" onclick="checkUrl('https://api.github.com', this)">Check Status</button>
+                    <span class="latency-text"></span>
+                </div>
             </div>
             <div class="url-card">
                 <strong>https://support.stripe.com</strong>
-                <button class="btn btn-primary btn-sm" onclick="checkUrl('https://support.stripe.com', this)">Check Status</button>
+                <div class="action-area">
+                    <button class="btn btn-primary btn-sm" onclick="checkUrl('https://support.stripe.com', this)">Check Status</button>
+                    <span class="latency-text"></span>
+                </div>
             </div>
             <div class="url-card">
                 <strong>https://httpbin.org/status/500</strong>
-                <button class="btn btn-primary btn-sm" onclick="checkUrl('https://httpbin.org/status/500', this)">Check Status</button>
+                <div class="action-area">
+                    <button class="btn btn-primary btn-sm" onclick="checkUrl('https://httpbin.org/status/500', this)">Check Status</button>
+                    <span class="latency-text"></span>
+                </div>
             </div>
             <div class="url-card">
                 <strong>https://httpbin.org/status/404</strong>
-                <button class="btn btn-primary btn-sm" onclick="checkUrl('https://httpbin.org/status/404', this)">Check Status</button>
+                <div class="action-area">
+                    <button class="btn btn-primary btn-sm" onclick="checkUrl('https://httpbin.org/status/404', this)">Check Status</button>
+                    <span class="latency-text"></span>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
         async function checkUrl(url, btn) {
-            console.log("Ping triggered for: " + url);
+            const latencyDisplay = btn.parentElement.querySelector('.latency-text');
+            latencyDisplay.innerText = ""; // Clear old time
+            
             btn.disabled = true;
             btn.innerText = "Checking...";
             
+            const start = performance.now(); // Start timer
+            
             try {
-                // We use no-cors to handle external sites. 
-                // Note: no-cors will treat ANY response as a success in the fetch promise.
                 await fetch(url, { mode: 'no-cors', cache: 'no-cache' });
+                
+                const end = performance.now(); // End timer
+                const duration = Math.round(end - start);
                 
                 btn.className = 'btn btn-success btn-sm';
                 btn.innerText = "ONLINE";
+                latencyDisplay.innerText = duration + " ms";
             } catch (err) {
-                console.error("Connection error for " + url, err);
                 btn.className = 'btn btn-danger btn-sm';
                 btn.innerText = "OFFLINE";
+                latencyDisplay.innerText = "Error";
             } finally {
                 btn.disabled = false;
                 setTimeout(() => {
                     btn.className = 'btn btn-primary btn-sm';
                     btn.innerText = "Check Status";
+                    // We keep the latency visible so you can actually read it!
                 }, 5000);
             }
         }
