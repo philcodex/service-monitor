@@ -26,6 +26,11 @@
         
         <div id="results">
             <div class="url-card">
+                <span class="url-text">https://www.google.com</span>
+                <button class="btn btn-primary btn-sm" onclick="checkUrl('https://www.google.com', this)">Check Status</button>
+            </div>
+            
+            <div class="url-card">
                 <span class="url-text">https://api.github.com</span>
                 <button class="btn btn-primary btn-sm" onclick="checkUrl('https://api.github.com', this)">Check Status</button>
             </div>
@@ -46,32 +51,20 @@
 
     <script>
         async function checkUrl(url, btn) {
-            // 1. Initial UI Feedback
             btn.disabled = true;
             btn.innerText = "Checking...";
             
             try {
-                // 2. The 'no-cors' ping
-                // We use this because static sites (Fastmail) can't bypass CORS headers
+                // Using 'no-cors' to ping the service
                 await fetch(url, { mode: 'no-cors', cache: 'no-cache' });
                 
-                // 3. Success state
                 btn.className = 'btn btn-success btn-sm';
                 btn.innerText = "ONLINE";
             } catch (err) {
-                // 4. Failure state (Offline or DNS error)
                 btn.className = 'btn btn-danger btn-sm';
                 btn.innerText = "OFFLINE";
                 console.error("Fetch failed:", err);
             } finally {
-                // 5. Re-enable and reset after 5 seconds
                 btn.disabled = false;
                 setTimeout(() => {
-                    btn.className = 'btn btn-primary btn-sm';
-                    btn.innerText = "Check Status";
-                }, 5000);
-            }
-        }
-    </script>
-</body>
-</html>
+                    btn.className = 'btn btn-primary
